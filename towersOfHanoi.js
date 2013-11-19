@@ -63,7 +63,7 @@
 	}
 	
 	
-	Game.prototype.playTurn = function(){
+	Game.prototype.playTurn = function(numTurns){
 		var that = this;
 				this.printRods()
 		READER.question("Name your source tower (0, 1, or 2): ", function(response){
@@ -72,7 +72,7 @@
 			READER.question("Name your destination tower (0, 1, or 2): ", function(response){
 				var destTower = parseInt(response);
 				if (that.isValidMove(sourceTower, destTower)) {
-					that.moveDisc(sourceTower, destTower)
+					that.moveDisc(sourceTower, destTower, numTurns)
 				}
 				else {
 					console.log("Invalid move.")
@@ -84,20 +84,21 @@
 	}
 	
 	
-	Game.prototype.moveDisc = function(src, dest){
+	Game.prototype.moveDisc = function(src, dest, numTurns){
 		this.stacks[dest].push(this.stacks[src].pop());
+		numTurns++
 		if (this.checkForWin()) {
-			console.log("You win!")
+			console.log("You won in " + parseInt(numTurns) + " turns!")
 			READER.close()
 		}
 		else {
-			this.playTurn()
+			this.playTurn(numTurns)
 		}
 	}
 	
 	Game.prototype.play = function(){
 		console.log("How to play message")
-		this.playTurn()	
+		this.playTurn(0)	
 
 	}	
 
