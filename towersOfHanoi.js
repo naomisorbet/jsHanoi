@@ -13,13 +13,26 @@
 		output: process.stdout
 	});
 			
+	
+	Game.prototype.isValidMove = function(src, dest){
+		if (this.stacks[src].length === 0){
+			return false;
+		}
+		else if (this.stacks[dest].length === 0){
+
+			return true;
+		}
+		else {
+			return this.stacks[src][this.stacks[src].length-1] < this.stacks[dest][this.stacks[dest].length-1];
+		}
+	}
 		
-	Game.prototype.checkForWin = function(){
+	Game.prototype.isWon = function(){
 		function checkTower(tower){
 			if(tower.length === 3) {
 				var subWon = true;
 			}
-			if (tower.length < 1){
+			else if (tower.length < 1){
 				subWon = false;
 			}
 			else{
@@ -40,32 +53,21 @@
 		return checkTower(this.stacks[1]) || checkTower(this.stacks[2]);
 	}
 	
-	Game.prototype.printRods = function(){
-		console.log(this.stacks);
-	}
-	
-	Game.prototype.solicitMove = function(){
-		
-	}
-	
-	
-	Game.prototype.isValidMove = function(src, dest){
-		if (this.stacks[src].length === 0){
-			return false;
-		}
-		else if (this.stacks[dest].length === 0){
-
-			return true;
+	Game.prototype.moveDisc = function(src, dest, numTurns){
+		this.stacks[dest].push(this.stacks[src].pop());
+		numTurns++
+		if (this.isWon()) {
+			console.log("You won in " + parseInt(numTurns) + " turns!")
+			READER.close()
 		}
 		else {
-			return this.stacks[src][this.stacks[src].length-1] < this.stacks[dest][this.stacks[dest].length-1];
+			this.playTurn(numTurns)
 		}
 	}
-	
 	
 	Game.prototype.playTurn = function(numTurns){
 		var that = this;
-				this.printRods()
+			this.printRods()
 		READER.question("Name your source tower (0, 1, or 2): ", function(response){
 			var sourceTower = parseInt(response);
 		
@@ -83,20 +85,11 @@
 		});
 	}
 	
-	
-	Game.prototype.moveDisc = function(src, dest, numTurns){
-		this.stacks[dest].push(this.stacks[src].pop());
-		numTurns++
-		if (this.checkForWin()) {
-			console.log("You won in " + parseInt(numTurns) + " turns!")
-			READER.close()
-		}
-		else {
-			this.playTurn(numTurns)
-		}
+	Game.prototype.printRods = function(){
+		console.log(this.stacks);
 	}
 	
-	Game.prototype.play = function(){
+		Game.prototype.play = function(){
 		console.log("How to play message")
 		this.playTurn(0)	
 
